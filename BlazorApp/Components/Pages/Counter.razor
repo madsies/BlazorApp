@@ -1,20 +1,18 @@
-﻿@page "/counter"
+﻿@page "/cookieClicker"
 @rendermode InteractiveServer
 
-<PageTitle>Counter</PageTitle>
+<PageTitle>CookieClicker</PageTitle>
 
-<h1>Counter</h1>
+<h1>Cookie Clicker</h1>
 
 <p role="status">Current count: @manager.getCookies()</p>
 
 
 
-@if (manager.getCookies() > 10)
+@foreach (CookieHelper helper in manager.helpers)
 {
-    //<button class="btn btn-primary" @onclick="">Upgrade</button>
-    return;
+    <button class="btn btn-primary" @onclick="() => manager.upgradeHelper(helper)">Upgrade</button>
 }
-
 
 
 <button class="btn btn-primary" @onclick="manager.onClick">Click</button>
@@ -30,11 +28,13 @@
         timer = new Timer(new TimerCallback(OnTimerTick), null, 1000, 1000);
     }
 
+    // In .blazor file for easier UI updating, data and functions in .cs
+
     private void OnTimerTick(object? state)
     {
         InvokeAsync(() => 
         {
-            manager.addCookies(1);
+            manager.addCookies(manager.getCPS());
             StateHasChanged();
         });
     }
