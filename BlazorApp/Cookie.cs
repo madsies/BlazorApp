@@ -1,28 +1,33 @@
 using System;
-using System.Timers;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading;
 
 namespace BlazorApp;
 
 public class Cookie
 {
-    private static System.Timers.Timer clock;
-    private int cookieCount;
-    private int clickStrength;
+    private int cookieCount = 0;
+    private int clickStrength = 1;
 
 
-    public static void Main()
-    {
-        clock = new System.Timers.Timer(1000);
-        clock.Elapsed += OnTimedEvent;
-    }
-
-    public static void onClick()
+    public void Main()
     {
         
     }
 
-    private static void OnTimedEvent(Object source, ElapsedEventArgs e)
+    public int getCookies()
     {
-
+        return cookieCount;
     }
+
+    public void addCookies(int amount)
+    {
+        cookieCount += amount;
+    }
+
+    public void onClick()
+    {
+        cookieCount += clickStrength;
+    }
+
 }

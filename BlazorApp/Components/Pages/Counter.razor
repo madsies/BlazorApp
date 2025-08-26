@@ -5,11 +5,11 @@
 
 <h1>Counter</h1>
 
-<p role="status">Current count: @cookieCount</p>
+<p role="status">Current count: @manager.getCookies()</p>
 
 
 
-@if (cookieCount > 10)
+@if (manager.getCookies() > 10)
 {
     //<button class="btn btn-primary" @onclick="">Upgrade</button>
     return;
@@ -17,16 +17,26 @@
 
 
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click</button>
+<button class="btn btn-primary" @onclick="manager.onClick">Click</button>
 
+@using System.Threading
 @code {
-    private int cookieCount = 0;
+    private Cookie manager = new Cookie();
 
-    [Parameter]
-    public int IncrementAmount {get; set;} = 1;
+    private Timer? timer;
 
-    private void IncrementCount()
+    protected override void OnInitialized()
     {
-        cookieCount += IncrementAmount;
+        timer = new Timer(new TimerCallback(OnTimerTick), null, 1000, 1000);
     }
+
+    private void OnTimerTick(object? state)
+    {
+        InvokeAsync(() => 
+        {
+            manager.addCookies(1);
+            StateHasChanged();
+        });
+    }
+    
 }
