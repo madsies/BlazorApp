@@ -7,13 +7,35 @@
 
 <p role="status">Current count: @manager.getCookies()</p>
 
+<style>
+    ul {
+        list-style-type: none;
+        padding: 0px;
+        margin:0px;
+        overflow: hidden;
+        background-color: black;
+    }
+    li {
+        float: left;
+        align-content: center;
+        padding: 10px;
+        margin:2px;
+        background-color: pink;
+    }
+    li button {
+        text-align: center;
+    }
+</style>
 
-
+<ul>
 @foreach (CookieHelper helper in manager.helpers)
 {
-    <button class="btn btn-primary" @onclick="() => manager.upgradeHelper(helper)">Upgrade</button>
+    <li>
+        <p>@(helper.helperName + "\n Owned:" + helper.amount)</p>
+        <button class="btn btn-primary" @onclick="() => manager.upgradeHelper(helper)">@("Buy: "+helper.basePrice)</button>
+    </li>
 }
-
+</ul>
 
 <button class="btn btn-primary" @onclick="manager.onClick">Click</button>
 
