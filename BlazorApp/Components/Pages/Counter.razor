@@ -1,0 +1,32 @@
+﻿@page "/counter"
+@rendermode InteractiveServer
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @cookieCount</p>
+
+
+
+@if (cookieCount > 10)
+{
+    //<button class="btn btn-primary" @onclick="">Upgrade</button>
+    return;
+}
+
+
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click</button>
+
+@code {
+    private int cookieCount = 0;
+
+    [Parameter]
+    public int IncrementAmount {get; set;} = 1;
+
+    private void IncrementCount()
+    {
+        cookieCount += IncrementAmount;
+    }
+}
