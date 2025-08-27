@@ -5,13 +5,20 @@
     #calc_options {
         background-color: plum;
         padding: 20px;
-        margin: 5px;
         overflow: hidden;
-        width: min-content;
+        width: 30%;
         border-radius: 25px;
         text-align: center;
         margin-left: auto;
         margin-right: auto;
+    }
+
+    #calc_options ul {
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center; 
     }
 
     #calc_options li {
@@ -42,24 +49,80 @@
         margin-right: auto;
     }
 
+    h1, h2{
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+    }
+
+    h2{
+        margin-bottom: 25px;
+    }
+    
+    #toggles
+    {
+        overflow: hidden;
+        width: 30%;
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #toggles ul
+    {
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: row;
+        align-items: center; 
+    }
+
+    #toggles li{
+        width: max-content;
+        list-style: none;
+        align-self: auto;
+        padding-right: 10px;
+    }
+
 </style>
 
 <PageTitle>Damage Calculator</PageTitle>
 
 <h1>Damage Calculator</h1>
 
-<p>Damage: @Value/s</p>
+<div id="toggles">
+    <ul>
+        <li><input type="checkbox" @bind="singleHit"> Per Hit?</li>
+        
+        <li><input type="checkbox" @bind="hitChanceToggle"> Hit Chance?</li>
+    </ul>
+</div>
+
 
 <div id="calc_options">
     <ul>
         <li>
+            <h3>Damage Stats</h3>
+        </li>
+        <li>
             <p>Damage</p>
             <input type="number" @bind="DamageValue"/>
         </li>
-        <li>
-            <p>Attacks Per Second</p>
-            <input type="number" @bind="APSValue"/>
-        </li>
+        @if (!singleHit)
+        {
+            <li>
+                <p>Attacks Per Second</p>
+                <input type="number" @bind="APSValue"/>
+            </li>
+        }
+        <!-- If single hit, cant calculate with hit chance, binary. -->
+        @if (hitChanceToggle && !singleHit)
+        {
+            <li>
+                <p>Hit Chance (%)</p>
+                <input type="number" @bind="HCValue"/>
+            </li>
+        }
         <li>
             <p>Critical Chance (%)</p>
             <input type="number" max="100" @bind="CCValue"/>
@@ -73,18 +136,43 @@
     <button @onclick="onCalculate">Calculate</button>
 </div>
 
+<div id="results">
+    <h2>Damage: @Value@getDamageSuffix()</h2>
+</div>
 
 
 @code
 {
     float Value = 0;
+
+    // Toggles
+    public bool singleHit = false;
+    public bool hitChanceToggle = false;
+
+    // User input values
     public float DamageValue = 0;
     public float APSValue = 1;
     public float CCValue = 0;
     public float CDValue = 0;
+    public float HCValue = 100;
 
     public void onCalculate()
     {
-        Value = (DamageValue * (1 + ((CDValue/100)*Math.Min((CCValue/100),1))) * APSValue);
+        if (singleHit)
+        {
+            Value = (DamageValue * (1 + ((CDValue/100)*Math.Min((CCValue/100),1))));
+        }
+        else
+        {
+            if (!hitChanceToggle) HCValue = 100;
+            Value = (DamageValue * (1 + ((CDValue/100)*Math.Min((CCValue/100),1))) * APSValue) * HCValue;
+        }
+        
+    }
+
+    public String getDamageSuffix()
+    {
+        if (singleHit) return " Per Hit";
+        return "/s";
     }
 }
