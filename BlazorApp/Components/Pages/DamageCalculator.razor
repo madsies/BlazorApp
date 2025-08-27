@@ -1,32 +1,78 @@
 ﻿@page "/damageCalculator"
 @rendermode InteractiveServer
 
+<style>
+    #calc_options {
+        background-color: plum;
+        padding: 20px;
+        margin: 5px;
+        overflow: hidden;
+        width: min-content;
+        border-radius: 25px;
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #calc_options li {
+        width: max-content;
+        list-style: none;
+        align-self: auto;
+    }
+
+    #calc_options input {
+        margin-top: 0;
+        margin-bottom: 10%;
+        border-radius: 15px;
+        background-color: darkgray;
+        width: 100px;
+    }
+
+    #calc_options p {
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 0%;
+        text-align: center;
+    }
+
+    #calc_options button {
+        margin-top: 10%;
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+</style>
+
 <PageTitle>Damage Calculator</PageTitle>
 
 <h1>Damage Calculator</h1>
 
 <p>Damage: @Value/s</p>
 
-<ul>
-    <li>
-        <p>Damage</p>
-        <input type="number" @bind="DamageValue"/>
-    </li>
-    <li>
-        <p>Attacks Per Second</p>
-        <input type="number" @bind="APSValue"/>
-    </li>
-    <li>
-        <p>Critical Chance (%)</p>
-        <input type="number" max="100" @bind="CCValue"/>
-    </li>
-    <li>
-        <p>Critical Damage (%)</p>
-        <input type="number" min="0" @bind="CDValue"/>
-    </li>
-</ul>
+<div id="calc_options">
+    <ul>
+        <li>
+            <p>Damage</p>
+            <input type="number" @bind="DamageValue"/>
+        </li>
+        <li>
+            <p>Attacks Per Second</p>
+            <input type="number" @bind="APSValue"/>
+        </li>
+        <li>
+            <p>Critical Chance (%)</p>
+            <input type="number" max="100" @bind="CCValue"/>
+        </li>
+        <li>
+            <p>Critical Damage (%)</p>
+            <input type="number" min="0" @bind="CDValue"/>
+        </li>
+    </ul>
 
-<button @onclick="onCalculate">Calculate</button>
+    <button @onclick="onCalculate">Calculate</button>
+</div>
+
 
 
 @code
