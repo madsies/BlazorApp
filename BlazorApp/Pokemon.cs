@@ -23,14 +23,15 @@ public class Pokedex
     public Pokedex()
     {
         pokeList = new List<Pokemon>();
-        var task = Task.Run(fetchPokemonInfo);
-        task.Wait();
+        //var task = Task.Run(fetchPokemonInfo);
+        //task.Wait();
         
     }
 
     // One time run and then cache data.
     /*
         Cant cache all info; ~210MB of data, impossible to use JSON file.
+        Caching basic information for a thumbnail, when a user clicks on it, give more info.
     */
     private async Task fetchPokemonInfo()
     {

@@ -1,0 +1,44 @@
+﻿@page "/damageCalculator"
+@rendermode InteractiveServer
+
+<PageTitle>Damage Calculator</PageTitle>
+
+<h1>Damage Calculator</h1>
+
+<p>Damage: @Value/s</p>
+
+<ul>
+    <li>
+        <p>Damage</p>
+        <input type="number" @bind="DamageValue"/>
+    </li>
+    <li>
+        <p>Attacks Per Second</p>
+        <input type="number" @bind="APSValue"/>
+    </li>
+    <li>
+        <p>Critical Chance (%)</p>
+        <input type="number" max="100" @bind="CCValue"/>
+    </li>
+    <li>
+        <p>Critical Damage (%)</p>
+        <input type="number" min="0" @bind="CDValue"/>
+    </li>
+</ul>
+
+<button @onclick="onCalculate">Calculate</button>
+
+
+@code
+{
+    float Value = 0;
+    public float DamageValue = 0;
+    public float APSValue = 1;
+    public float CCValue = 0;
+    public float CDValue = 0;
+
+    public void onCalculate()
+    {
+        Value = (DamageValue * (1 + ((CDValue/100)*Math.Min((CCValue/100),1))) * APSValue);
+    }
+}
