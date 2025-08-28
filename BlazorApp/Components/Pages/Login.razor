@@ -26,6 +26,7 @@
 
 @code
 {
+    LoginManager manager = new LoginManager();
     public string usernameInput = "";
     public string emailInput = "";
     public string passwordInput= "";
@@ -44,25 +45,6 @@
         Checks length, numbers, etc.
     */
 
-    public bool checkPasswordStrength(string password)
-    {
-        // Length Check
-        if (password.Length < 8) return false;
-
-        // Includes Digit
-        Regex r = new Regex(".*[0-9].*");
-        if (!r.IsMatch(password)) return false;
-
-        // Valid Password
-        return true;
-    }
-
-    public bool checkValidEmailFormat(string email)
-    {
-        Regex r = new Regex(@"^((\w+([-+.]?\w+)*@\w+([-.]?\w+)*\.\w+([-.]?\w+)*)\s*[;]{0,1}\s*)+$");
-        if (!r.IsMatch(email)) return false;
-        return true;
-    }
 
     public void onClickLogin()
     {
@@ -73,9 +55,12 @@
     public void onClickCreate()
     {
         errorAlert = "";
-        if (!checkValidEmailFormat(emailInput)) errorAlert += "Invalid Email.\n";
-        if (!checkPasswordStrength(passwordInput)) errorAlert += "Password too weak!\n";
+        if (!manager.checkValidEmailFormat(emailInput)) errorAlert += "Invalid Email.\n";
+        if (!manager.checkPasswordStrength(passwordInput)) errorAlert += "Password too weak!\n";
         
         if (errorAlert == "") errorAlert = "Valid Password";
+
+        manager.hashAndSalt(passwordInput);
     }
+
 }
