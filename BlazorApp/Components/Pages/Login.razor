@@ -1,0 +1,27 @@
+@page "/Login"
+@rendermode InteractiveServer
+
+<div id="LoginBox">
+    <h1>Login</h1>
+    <div id="Inputs">
+        <p>Username</p>
+        <input type="text" bind="@usernameInput"/>
+
+        <p>Password</p>
+        <input type="password" bind="@passwordInput"/>
+
+    </div>
+    <button @onclick="onClick">Confirm</button>
+    
+</div>
+
+@code
+{
+    public string usernameInput;
+    public string passwordInput;
+
+    public void onClick()
+    {
+        
+    }
+}

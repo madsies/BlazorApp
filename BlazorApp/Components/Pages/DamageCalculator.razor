@@ -165,7 +165,7 @@
         else
         {
             if (!hitChanceToggle) HCValue = 100;
-            Value = (DamageValue * (1 + ((CDValue/100)*Math.Min((CCValue/100),1))) * APSValue) * HCValue;
+            Value = (DamageValue * (1 + ((CDValue/100)*Math.Min((CCValue/100),1))) * APSValue) * (HCValue/100);
         }
         
     }
