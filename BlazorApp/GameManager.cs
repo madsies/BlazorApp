@@ -18,6 +18,7 @@ public class Player
     public Classes mainRole;
     public List<Classes> roles;
     public int elo;
+    public bool onTeam { get; set; }
 
     public Player(string name, Classes mainRole, int elo)
     {
@@ -46,7 +47,7 @@ public class Roster
         return new List<Player>() { SUPPORT_1, SUPPORT_2 };
     }
 
-    public List<Player> GetPlayers()
+    public List<Player> getPlayers()
     {
         return new List<Player>() {TANK, DAMAGE_1, DAMAGE_2, SUPPORT_1, SUPPORT_2 };
     }
@@ -66,6 +67,10 @@ public class Team
         this.members = new List<Player>();
     }
 
+    public Team()
+    {
+    }
+
     public void addPlayer(Player plr)
     {
         if (members.Contains(plr)) return;
@@ -73,14 +78,34 @@ public class Team
         members.Add(plr);
     }
 
+    public void setCaptain(Player plr)
+    {
+        if (!members.Contains(plr)) return;
+        captain = plr;
+    }
+
     public void removePlayer(Player plr)
     {
         members.Remove(plr);
     }
 
-    public setRoster()
+    public int getTeamAverageElo()
     {
-        
+        if (this.roster is null) return 0;
+        int count = 0;
+
+        foreach (Player member in this.roster.getPlayers())
+        {
+            count += member.elo;
+        }
+        return count / 5;
+    }
+
+    public void setRoster(Player tank, Player dps1, Player dps2, Player sup1, Player sup2)
+    {
+        if (!members.Contains(tank)) return;
+
+        this.roster = new Roster() { TANK = tank, DAMAGE_1 = dps1, DAMAGE_2 = dps2, SUPPORT_1 = sup1, SUPPORT_2 = sup2 };
     }
 
 
@@ -124,7 +149,56 @@ public class Team
 
 }
 
+/*
+    Manages picking captains, team matchups etc.
+*/
+
 public class GameManager
 {
+    public List<Team> teamPool;
+    public List<Player> playerPool;
+
+    /*
+        Returns a list of players marked with "onTeam" as false
+    */
+
+    public List<Player> getFreePlayers()
+    {
+        List<Player> freePlayers = new List<Player>();
+        foreach (Player plr in playerPool)
+        {
+            if (!plr.onTeam) freePlayers.Add(plr);
+        }
+        return freePlayers;
+    }
+
+    public List<Team> makeRolelessTeams(bool balanced, bool ranked)
+    {
+        List<Team> teams = new List<Team>();
+        List<Player> freePlayers = getFreePlayers();
+        if (freePlayers.Count < 10) return teams;
+
+        Team team1 = new Team(){name = "red"};
+
+        if (balanced)
+        {
+
+        }
+        else
+        {
+            for
+        }
+
+        return teams;
+    }
+
+    public List<Team> makeRoleTeams(bool balanced, bool ranked)
+    {
+        List<Team> teams = new List<Team>();
+        List<Player> freePlayers = getFreePlayers();
+        if (freePlayers.Count < 10) return teams; 
+
+        return teams;
+    }
 
 }
