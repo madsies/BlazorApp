@@ -9,16 +9,29 @@ public enum Classes
 {
     TANK = 0,
     DAMAGE = 1,
-    SUPPORT = 2
+    SUPPORT = 2,
+    FLEX = 3
+    //TANK_DAMAGE = 4,
+    //TANK_SUPPORT = 5,
+    //DAMAGE_SUPPORT = 6
+}
+
+public class Match
+{
+    public Team? team1 = null;
+    public Team? team2 = null;
+    public bool ranked;
+
 }
 
 public class Player
 {
-    public required string username { get; set; }
+    public string username { get; set; }
     public Classes mainRole;
     public List<Classes> roles;
     public int elo;
-    public bool onTeam { get; set; }
+    public bool onTeam { get; set; } = false;
+    public bool priority { get; set; } = false;
 
     public Player(string name, Classes mainRole, int elo)
     {
@@ -69,6 +82,7 @@ public class Team
 
     public Team()
     {
+        this.members = new List<Player>();
     }
 
     public void addPlayer(Player plr)
@@ -126,6 +140,7 @@ public class Team
         int tankCount = 0;
         int supCount = 0;
         int dpsCount = 0;
+        int flexCount = 0;
 
         foreach (Player member in members)
         {
@@ -140,9 +155,16 @@ public class Team
                 case Classes.SUPPORT:
                     supCount++;
                     break;
+                case Classes.FLEX:
+                    flexCount++;
+                    break;
             }
         }
         if (tankCount >= 1 && dpsCount >= 2 && supCount >= 2) return true;
+
+        int missingSlots = Math.Max(0, 1 - tankCount) + Math.Max(0, 2 - dpsCount) + Math.Max(0, 2 - supCount);
+
+        if (flexCount >= missingSlots) return true;
 
         return false;
     }
@@ -155,8 +177,28 @@ public class Team
 
 public class GameManager
 {
-    public List<Team> teamPool;
+    public List<Match> matchPool;
     public List<Player> playerPool;
+
+    public GameManager()
+    {
+        matchPool = new List<Match>();
+        playerPool = new List<Player>();
+    }
+
+    
+    public void addPlayer(string name, Classes role)
+    {
+        Player newPlayer = new Player(name, role, 2000);
+
+        playerPool.Add(newPlayer);
+    }
+
+    public void removePlayer(Player plr)
+    {
+        playerPool.Remove(plr);
+    }
+
 
     /*
         Returns a list of players marked with "onTeam" as false
@@ -186,7 +228,7 @@ public class GameManager
         }
         else
         {
-            for
+            //for
         }
 
         return teams;

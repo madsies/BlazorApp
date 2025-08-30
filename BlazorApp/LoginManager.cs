@@ -40,7 +40,7 @@ class LoginManager()
         Random random = new Random();
         HashedPassword pass = new HashedPassword
         {
-            hash = string.Empty,
+            hash = new byte[64],
             salt = RandomNumberGenerator.GetBytes(16),
             iterations = 5
         };

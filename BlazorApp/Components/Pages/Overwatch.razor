@@ -1,0 +1,109 @@
+@page "/Overwatch"
+@rendermode InteractiveServer
+
+<style>
+    li
+    {
+        width: max-content;
+        list-style: none;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #AddPlayer p 
+    {
+        margin-bottom: 0%;
+        text-align: center;
+    }
+
+    #AddPlayer input, select
+    {
+        margin-bottom: 15px;
+    }
+
+    #AddPlayer 
+    {
+        background-color: paleturquoise;
+        opacity: 0.7;
+        border-radius: 15px;
+        width: max-content;
+        margin-left: 1%;
+        margin-right: auto;
+        padding: 20px;
+        text-align: center;
+        overflow: hidden;
+        float:left;
+    }
+
+    #PlayerList
+    {
+        float: left;
+        margin-left: 2.5%;
+        background-color: peachpuff;
+        opacity: 0.7;
+        padding: 20px;
+        border-radius: 15px;
+        width: max-content;
+        
+    }
+
+</style>
+
+<div id="SettingsContainer">
+    <div id="AddPlayer">
+        <h2>Add Player</h2>
+        <ul>
+            <li>
+                <p>Username</p>
+                <input type="text" @bind="newPlayerName">
+            </li>
+
+            <li>
+            <p>Role</p>
+                <select @bind="newPlayerRole">
+                    <option value="@Classes.TANK">Tank</option>
+                    <option value="@Classes.DAMAGE">DPS</option>
+                    <option value="@Classes.SUPPORT">Support</option>
+                    <option value="@Classes.FLEX">Flex</option>
+                </select>
+            </li>
+
+            <li>
+                <p>Rank (SR)</p>
+                <input type="number" @bind="newPlayerRank">
+            </li>
+        </ul>
+
+        <button @onclick="onAddPlayer">Add Player</button>
+    </div>
+
+    <div id="PlayerList">
+        <h2>Free Players</h2>
+        <ul>
+            @foreach (Player p in manager.getFreePlayers())
+            {
+                <li>    
+                    <p>@p.username</p>
+                    <button>Captain</button>
+                    <button @onclick="@(e => {manager.removePlayer(p);;})">Remove</button>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+@code
+{
+    GameManager manager = new GameManager();
+
+    public string newPlayerName = "";
+    public Classes newPlayerRole = Classes.FLEX;
+    public int newPlayerRank = 0;
+
+    public void onAddPlayer()
+    {
+        manager.addPlayer(newPlayerName, newPlayerRole);
+        Console.Write(manager.playerPool);
+    }
+
+}
