@@ -24,16 +24,15 @@
     
 </div>
 
-@code
-{
+@code {
     LoginManager manager = new LoginManager();
     public string usernameInput = "";
     public string emailInput = "";
-    public string passwordInput= "";
+    public string passwordInput = "";
 
     public bool createAccountToggle;
-    public string[] loginTextToggle = {"Login", "Create Account"};
-    public string[] toggleText = {"Create Account", "Have an account already?"};
+    public string[] loginTextToggle = { "Login", "Create Account" };
+    public string[] toggleText = { "Create Account", "Have an account already?" };
 
     public string errorAlert = "";
 
@@ -45,11 +44,17 @@
         Checks length, numbers, etc.
     */
 
-
     public void onClickLogin()
     {
-        
-        
+        errorAlert = "";
+
+        if (!manager.usernameExists(usernameInput)) errorAlert += "Account doesnt exist.\n";
+        if (!manager.checkPasswordWithHash(passwordInput, usernameInput)) errorAlert += "Incorrect Password.\n";
+        // Add additional login checks here as needed
+        if (errorAlert == "")
+        {
+            errorAlert = "Valid Password";
+        } 
     }
 
     public void onClickCreate()
@@ -57,10 +62,9 @@
         errorAlert = "";
         if (!manager.checkValidEmailFormat(emailInput)) errorAlert += "Invalid Email.\n";
         if (!manager.checkPasswordStrength(passwordInput)) errorAlert += "Password too weak!\n";
-        
+
         if (errorAlert == "") errorAlert = "Valid Password";
 
         manager.hashAndSalt(passwordInput);
     }
-
 }

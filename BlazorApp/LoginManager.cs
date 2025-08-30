@@ -52,6 +52,14 @@ class LoginManager()
 
         pass.hash = hash;
         Console.Write(pass.hash);
+        
+        return pass;
+    }
+
+    public bool usernameExists(string username)
+    {
+        // Return true if the username exists in the database
+        return true;
     }
 
     public bool checkPasswordWithHash(string password, string username)
