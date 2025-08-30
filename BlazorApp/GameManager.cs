@@ -18,9 +18,15 @@ public enum Classes
 
 public class Match
 {
-    public Team? team1 = null;
-    public Team? team2 = null;
+    public Team team1;
+    public Team team2;
     public bool ranked;
+
+    public Match()
+    {
+        team1 = new Team("Red");
+        team2 = new Team("Blue");
+    }
 
 }
 
@@ -69,7 +75,7 @@ public class Roster
 
 public class Team
 {
-    public required string name { get; set; }
+    public string name { get; set; }
     public List<Player> members;
     public Player? captain;
     public Roster? roster = null;
@@ -82,6 +88,7 @@ public class Team
 
     public Team()
     {
+        this.name = "default";
         this.members = new List<Player>();
     }
 
@@ -199,6 +206,12 @@ public class GameManager
         playerPool.Remove(plr);
     }
 
+    public void createEmptyMatch()
+    {
+        Match newMatch = new Match();
+        matchPool.Add(newMatch);
+    }
+
 
     /*
         Returns a list of players marked with "onTeam" as false
@@ -214,11 +227,11 @@ public class GameManager
         return freePlayers;
     }
 
-    public List<Team> makeRolelessTeams(bool balanced, bool ranked)
+    public void makeRolelessMatch(bool balanced, bool ranked)
     {
         List<Team> teams = new List<Team>();
         List<Player> freePlayers = getFreePlayers();
-        if (freePlayers.Count < 10) return teams;
+        if (freePlayers.Count < 10) return;
 
         Team team1 = new Team(){name = "red"};
 
@@ -231,16 +244,14 @@ public class GameManager
             //for
         }
 
-        return teams;
     }
 
-    public List<Team> makeRoleTeams(bool balanced, bool ranked)
+    public void makeRoleMatch(bool balanced, bool ranked)
     {
         List<Team> teams = new List<Team>();
         List<Player> freePlayers = getFreePlayers();
-        if (freePlayers.Count < 10) return teams; 
+        if (freePlayers.Count < 10) return; 
 
-        return teams;
     }
 
 }

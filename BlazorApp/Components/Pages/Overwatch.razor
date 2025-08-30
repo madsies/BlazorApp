@@ -2,7 +2,7 @@
 @rendermode InteractiveServer
 
 <style>
-    li
+    #AddPlayer li
     {
         width: max-content;
         list-style: none;
@@ -29,7 +29,7 @@
         width: max-content;
         margin-left: 1%;
         margin-right: auto;
-        padding: 20px;
+        padding: 10px;
         text-align: center;
         overflow: hidden;
         float:left;
@@ -44,7 +44,38 @@
         padding: 20px;
         border-radius: 15px;
         width: max-content;
-        
+    }
+
+    #PlayerList p 
+    {
+        float: left;
+        margin-left: 5px;
+    }
+
+    #PlayerList button
+    {
+        float: right;
+        margin: 2px;
+    }
+
+    #PlayerList li
+    {
+        list-style: none;
+        margin: 5px;
+        width:100%;
+        background-color: grey;
+    }
+
+    ul 
+    {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    main
+    {
+        background: #edebec;
+        background: linear-gradient(180deg,rgba(237, 235, 236, 1) 0%, rgba(255, 219, 227, 1) 48%, rgba(255, 171, 217, 1) 100%);
     }
 
 </style>
@@ -85,12 +116,38 @@
                 <li>    
                     <p>@p.username</p>
                     <button>Captain</button>
-                    <button @onclick="@(e => {manager.removePlayer(p);;})">Remove</button>
+                    <button @onclick="@(e => {manager.removePlayer(p);})">Remove</button>
                 </li>
             }
         </ul>
     </div>
+
+    <div id="MatchCreator">
+        <h2>Admin Controls</h2>
+
+        <p>Check Roles <input type="checkbox" bind="forceRolesCheck"></p>
+
+        <ul>
+            <li>
+                <button @onclick="@(e => {manager.createEmptyMatch();})">Create Manual Lobby</button>
+            </li>
+            <li>
+                <button>Create Random Lobby</button>
+            </li>
+            <li>
+                <button>Create Balanced Lobby</button>
+            </li>
+        </ul>
+    </div>
+
 </div>
+
+@foreach(Match m in manager.matchPool)
+{
+    <div id="Match">
+        <p>@m.team1.name & @m.team2.name</p>
+    </div>
+}
 
 @code
 {
@@ -99,6 +156,7 @@
     public string newPlayerName = "";
     public Classes newPlayerRole = Classes.FLEX;
     public int newPlayerRank = 0;
+    public bool forceRolesCheck = false;
 
     public void onAddPlayer()
     {
