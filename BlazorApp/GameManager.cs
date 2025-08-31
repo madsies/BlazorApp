@@ -88,8 +88,15 @@ public class Roster
                 break;
         }
         if (slot > 4) return;
-        Console.Write("hey its workin");
         listed[slot] = player;
+    }
+
+    public void removePlayer(Player player)
+    {
+        int idx = listed.IndexOf(player);
+        if (idx == -1) return;
+
+        listed[idx] = new Player("DUMMY", Classes.FLEX, 0) { dummy = true };
     }
 
     public List<Player> getDamage()
@@ -147,6 +154,7 @@ public class Team
     {
         plr.onTeam = false;
         members.Remove(plr);
+        roster.removePlayer(plr);
     }
 
     public int getTeamAverageElo()
@@ -238,13 +246,29 @@ public class GameManager
         return plr;
     }
 
-    
-    public void addPlayer(string name, Classes role)
+    public void addPlayer(string name, Classes role, int elo)
     {
         if (getPlayerFromUser(name) != null) return; // Stops duplicate names
-        Player newPlayer = new Player(name, role, 2000){dummy=false};
+        Player newPlayer = new Player(name, role, elo){dummy=false};
 
         playerPool.Add(newPlayer);
+    }
+
+    public void closeMatch(Match m)
+    {
+        int idx = matchPool.IndexOf(m);
+        if (idx == -1) return;
+
+        // Removing onTeam flags to make players searchable
+        foreach (Player plr in m.team1.members)
+        {
+            plr.onTeam = false;
+        }
+        foreach (Player plr in m.team2.members)
+        {
+            plr.onTeam = false;
+        }
+        matchPool.Remove(m);
     }
 
     public void removePlayer(Player plr)

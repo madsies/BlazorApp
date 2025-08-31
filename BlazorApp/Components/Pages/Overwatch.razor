@@ -146,8 +146,9 @@
 {
     <div id="Match">
         <div id="Players">
+
             <div id="team">
-                <h4>@m.team1.name</h4>
+                <h4>@m.team1.name [@m.team1.getTeamAverageElo()]</h4>
                 <ul>
                     @for (int i = 0; i < 5; i++)
                     {
@@ -156,7 +157,7 @@
                         {
                             <li>
                                 <p>@m.team1.roster.getPlayers()[i].username</p>
-                                <button>Remove</button>
+                                <button @onclick="e => {m.team1.removePlayer(m.team1.roster.getPlayers()[localindex]);}">Remove</button>
                             </li>
                         }
                         else
@@ -194,6 +195,7 @@
                 
             </div>
         </div>
+        <button @onclick="e => {manager.closeMatch(m);}">Close Match</button>
     </div>
 }
 
@@ -207,7 +209,7 @@
     public bool forceRolesCheck = false;
     public void onAddPlayer()
     {
-        manager.addPlayer(newPlayerName, newPlayerRole);
+        manager.addPlayer(newPlayerName, newPlayerRole, newPlayerRank);
         Console.Write(manager.playerPool);
     }
 
