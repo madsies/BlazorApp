@@ -145,7 +145,55 @@
 @foreach(Match m in manager.matchPool)
 {
     <div id="Match">
-        <p>@m.team1.name & @m.team2.name</p>
+        <div id="Players">
+            <div id="team">
+                <h4>@m.team1.name</h4>
+                <ul>
+                    @for (int i = 0; i < 5; i++)
+                    {
+                        int localindex = i; // This is because if u just use i, it'll equal 5 (end of loop)
+                        @if (!m.team1.roster.getPlayers().ElementAt(i).dummy)
+                        {
+                            <li>
+                                <p>@m.team1.roster.getPlayers()[i].username</p>
+                                <button>Remove</button>
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                <select @onchange="e => {
+                                    var player = manager.getPlayerFromUser(e.Value?.ToString() ?? string.Empty);
+                                    if (player != null)
+                                    {
+                                        m.team1.addPlayer(player, localindex);
+                                    }
+                                }">
+                                    @foreach(Player p in manager.getFreePlayers())
+                                    {
+                                        <option value="@p.username">@p.username</option>
+                                    }
+                                </select>
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+
+            <div id="team">
+                <h4>@m.team2.name</h4>
+                <ul>
+                    @foreach(Player member in m.team2.members)
+                    {
+                        <li>
+                            <p>@member.username</p>
+                            <button>Remove</button>
+                        </li>
+                    }
+                </ul>
+                
+            </div>
+        </div>
     </div>
 }
 
@@ -157,7 +205,6 @@
     public Classes newPlayerRole = Classes.FLEX;
     public int newPlayerRank = 0;
     public bool forceRolesCheck = false;
-
     public void onAddPlayer()
     {
         manager.addPlayer(newPlayerName, newPlayerRole);

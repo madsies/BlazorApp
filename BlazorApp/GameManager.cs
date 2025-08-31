@@ -33,6 +33,7 @@ public class Match
 public class Player
 {
     public string username { get; set; }
+    public bool dummy = false;
     public Classes mainRole;
     public List<Classes> roles;
     public int elo;
@@ -51,11 +52,45 @@ public class Player
 
 public class Roster
 {
-    public required Player TANK { get; set; }
-    public required Player DAMAGE_1 { get; set; }
-    public required Player DAMAGE_2 { get; set; }
-    public required Player SUPPORT_1 { get; set; }
-    public required Player SUPPORT_2 { get; set; }
+    public List<Player> listed = new List<Player>(5);
+    public Player? TANK { get; set; }
+    public Player? DAMAGE_1 { get; set; }
+    public Player? DAMAGE_2 { get; set; }
+    public Player? SUPPORT_1 { get; set; }
+    public Player? SUPPORT_2 { get; set; }
+
+    public Roster()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            listed.Add(new Player("DUMMY", Classes.FLEX, 0) { dummy = true});
+        }
+    }
+
+    public void addPlayer(Player player, int slot)
+    {
+        switch (slot)
+        {
+            case 0:
+                TANK = player;
+                break;
+            case 1:
+                DAMAGE_1 = player;
+                break;
+            case 2:
+                DAMAGE_2 = player;
+                break;
+            case 3:
+                SUPPORT_1 = player;
+                break;
+            case 4:
+                SUPPORT_2 = player;
+                break;
+        }
+        if (slot > 4) return;
+        Console.Write("hey its workin");
+        listed[slot] = player;
+    }
 
     public List<Player> getDamage()
     {
@@ -68,7 +103,7 @@ public class Roster
 
     public List<Player> getPlayers()
     {
-        return new List<Player>() {TANK, DAMAGE_1, DAMAGE_2, SUPPORT_1, SUPPORT_2 };
+        return listed;
     }
 }
 
@@ -78,7 +113,7 @@ public class Team
     public string name { get; set; }
     public List<Player> members;
     public Player? captain;
-    public Roster? roster = null;
+    public Roster roster = new Roster();
 
     public Team(string name)
     {
@@ -92,11 +127,14 @@ public class Team
         this.members = new List<Player>();
     }
 
-    public void addPlayer(Player plr)
+    public void addPlayer(Player plr, int slot)
     {
         if (members.Contains(plr)) return;
+        plr.onTeam = true;
+        Console.Write(plr.dummy +" "+ slot);
 
         members.Add(plr);
+        roster.addPlayer(plr, slot);
     }
 
     public void setCaptain(Player plr)
@@ -107,6 +145,7 @@ public class Team
 
     public void removePlayer(Player plr)
     {
+        plr.onTeam = false;
         members.Remove(plr);
     }
 
@@ -193,10 +232,17 @@ public class GameManager
         playerPool = new List<Player>();
     }
 
+    public Player? getPlayerFromUser(string user)
+    {
+        Player? plr = playerPool.FirstOrDefault(p => p.username == user);
+        return plr;
+    }
+
     
     public void addPlayer(string name, Classes role)
     {
-        Player newPlayer = new Player(name, role, 2000);
+        if (getPlayerFromUser(name) != null) return; // Stops duplicate names
+        Player newPlayer = new Player(name, role, 2000){dummy=false};
 
         playerPool.Add(newPlayer);
     }
