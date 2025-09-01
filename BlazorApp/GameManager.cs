@@ -250,6 +250,10 @@ public class GameManager
     public void addPlayer(string name, Classes role, int elo)
     {
         if (getPlayerFromUser(name) != null) return; // Stops duplicate names
+        if (name.Length < 3 || name.Length > 15) return; // Stops empty and spammy names.
+
+        if (elo > 5000 || elo < 0) return; // Negative and elo over 5000 not allowed.
+
         Player newPlayer = new Player(name, role, elo){dummy=false};
 
         playerPool.Add(newPlayer);

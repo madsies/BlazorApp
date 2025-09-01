@@ -194,10 +194,14 @@
                     @for (int i = 0; i < 5; i++)
                     {
                         int localindex = i; // This is because if u just use i, it'll equal 5 (end of loop)
-                        @if (!m.team1.roster.getPlayers().ElementAt(i).dummy)
+                        List<Player> players = m.team1.roster.getPlayers();
+                        @if (!players.ElementAt(i).dummy)
                         {
+                            string usernameString = @players[i].username;
+                            @if (m.team1.captain == players[i]) usernameString += " [C]";
+
                             <li id="playerSlot">
-                                <p>@m.team1.roster.getPlayers()[i].username</p>
+                                <p>@usernameString</p>
                                 <button @onclick="e => {m.team1.removePlayer(m.team1.roster.getPlayers()[localindex]);}">Remove</button>
                                 @if (m.team1.captain == null)
                                 {
