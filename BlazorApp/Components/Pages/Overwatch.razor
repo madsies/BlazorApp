@@ -2,10 +2,13 @@
 @rendermode InteractiveServer
 
 <style>
+    li
+    {
+        list-style: none;
+    }
     #AddPlayer li
     {
         width: max-content;
-        list-style: none;
         margin-left: auto;
         margin-right: auto;
     }
@@ -44,12 +47,20 @@
         padding: 20px;
         border-radius: 15px;
         width: max-content;
+       
     }
 
     #PlayerList p 
     {
         float: left;
         margin-left: 5px;
+    }
+
+    .scrollList 
+    {
+        height: 325px;
+        overflow: scroll;
+        overflow-x: hidden;
     }
 
     #PlayerList button
@@ -60,7 +71,6 @@
 
     #PlayerList li
     {
-        list-style: none;
         margin: 5px;
         width:100%;
         background-color: grey;
@@ -78,11 +88,41 @@
         background: linear-gradient(180deg,rgba(237, 235, 236, 1) 0%, rgba(255, 219, 227, 1) 48%, rgba(255, 171, 217, 1) 100%);
     }
 
+    #SettingsContainer
+    {
+        display: block;
+    }
+
+    #Match
+    {
+        display: block;
+        position: relative;
+        top: 400px;
+    }
+
+    #team 
+    {
+        float: left;
+        background: red;
+        opacity: 0.7;
+        width: max-content;
+        padding:25px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #team li
+    {
+        margin-left:0;
+        margin-right:auto;
+    }
+
 </style>
 
 <div id="SettingsContainer">
     <div id="AddPlayer">
         <h2>Add Player</h2>
+        
         <ul>
             <li>
                 <p>Username</p>
@@ -110,16 +150,18 @@
 
     <div id="PlayerList">
         <h2>Free Players</h2>
-        <ul>
-            @foreach (Player p in manager.getFreePlayers())
-            {
-                <li>    
-                    <p>@p.username</p>
-                    <button>Captain</button>
-                    <button @onclick="@(e => {manager.removePlayer(p);})">Remove</button>
-                </li>
-            }
-        </ul>
+        <div class="scrollList">
+            <ul>
+                @foreach (Player p in manager.getFreePlayers())
+                {
+                    <li>    
+                        <p>@p.username</p>
+                        <button>Captain</button>
+                        <button @onclick="@(e => {manager.removePlayer(p);})">Remove</button>
+                    </li>
+                }
+            </ul>
+        </div>
     </div>
 
     <div id="MatchCreator">
@@ -146,7 +188,6 @@
 {
     <div id="Match">
         <div id="Players">
-
             <div id="team">
                 <h4>@m.team1.name [@m.team1.getTeamAverageElo()]</h4>
                 <ul>
@@ -155,9 +196,13 @@
                         int localindex = i; // This is because if u just use i, it'll equal 5 (end of loop)
                         @if (!m.team1.roster.getPlayers().ElementAt(i).dummy)
                         {
-                            <li>
+                            <li id="playerSlot">
                                 <p>@m.team1.roster.getPlayers()[i].username</p>
                                 <button @onclick="e => {m.team1.removePlayer(m.team1.roster.getPlayers()[localindex]);}">Remove</button>
+                                @if (m.team1.captain == null)
+                                {
+                                    <button @onclick="e=>{m.team1.setCaptain(m.team1.roster.getPlayers()[localindex]);}">Captain</button>
+                                }
                             </li>
                         }
                         else
@@ -170,6 +215,7 @@
                                         m.team1.addPlayer(player, localindex);
                                     }
                                 }">
+                                    <option><i>Choose a player</i></option>
                                     @foreach(Player p in manager.getFreePlayers())
                                     {
                                         <option value="@p.username">@p.username</option>
@@ -182,17 +228,38 @@
             </div>
 
             <div id="team">
-                <h4>@m.team2.name</h4>
+                <h4>@m.team2.name [@m.team2.getTeamAverageElo()]</h4>
                 <ul>
-                    @foreach(Player member in m.team2.members)
+                    @for (int i = 0; i < 5; i++)
                     {
-                        <li>
-                            <p>@member.username</p>
-                            <button>Remove</button>
-                        </li>
+                        int localindex = i; // This is because if u just use i, it'll equal 5 (end of loop)
+                        @if (!m.team2.roster.getPlayers().ElementAt(i).dummy)
+                        {
+                            <li>
+                                <p>@m.team2.roster.getPlayers()[i].username</p>
+                                <button @onclick="e => {m.team2.removePlayer(m.team2.roster.getPlayers()[localindex]);}">Remove</button>
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                <select @onchange="e => {
+                                    var player = manager.getPlayerFromUser(e.Value?.ToString() ?? string.Empty);
+                                    if (player != null)
+                                    {
+                                        m.team2.addPlayer(player, localindex);
+                                    }
+                                }">
+                                    <option><i>Choose a player</i></option>
+                                    @foreach(Player p in manager.getFreePlayers())
+                                    {
+                                        <option value="@p.username">@p.username</option>
+                                    }
+                                </select>
+                            </li>
+                        }
                     }
                 </ul>
-                
             </div>
         </div>
         <button @onclick="e => {manager.closeMatch(m);}">Close Match</button>

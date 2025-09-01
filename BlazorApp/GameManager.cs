@@ -153,6 +153,7 @@ public class Team
     public void removePlayer(Player plr)
     {
         plr.onTeam = false;
+        if (captain == plr) captain = null;
         members.Remove(plr);
         roster.removePlayer(plr);
     }
